@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+
+GET_BLUETOOTH() {
+	blue_is_running="$(bluetoothctl show | grep -o 'Powered: yes')"
+	blue_device="$(bluetoothctl devices | grep -o '..:.*:..' | bluetoothctl info)"
+	blue_is_connected="$(printf "$blue_device" | grep -o 'Connected: yes')"
+	blue_battery="$(printf "$blue_device" | grep 'Battery Percentage:' | grep -Po '(?<=\().*(?=\))')"
+
+	if [ -n "$blue_is_connected" ]; then
+		[ -n "$blue_battery" ] && { blue_battery+="%"; }
+
+		bluetooth="󰂱 $blue_battery"
+	elif [ -n "$blue_is_running" ]; then
+		bluetooth="󰂯"
+	else
+		bluetooth="󰂲"
+	fi
+}
+
+GET_VOLUME() {
+	is_mute="$(pactl list sinks | grep -o 'Mute: yes')"
+
+	if [ -n "$is_mute" ]; then
+		volume=" "
+	else
+		volume="  $(pactl list sinks | grep 'Volume' | head -n 1 | awk '{print $5}')"
+	fi
+}
+
+GET_MIC() {
+	is_mute="$(pactl list sources | grep -A 15 "$(pactl info | grep 'Default Source' | cut -d' ' -f3)" | grep -o 'Mute: yes')"
+
+	if [ -n "$is_mute" ]; then
+		mic=" "
+	else
+		mic=" $(pactl list sources | grep -A 15 "$(pactl info | grep 'Default Source' | cut -d' ' -f3)" | grep 'Volume' | head -n 1 | awk '{print $5}')"
+	fi
+}
+
+while true; do
+	cpu_temp=" $(awk '{x += $1} END{ printf "%.0f", x / NR / 1000}' /sys/class/thermal/thermal_zone*/temp)°C"
+	date_and_time="󰥔 $(date +'%H:%M |  %d/%m/%y')"
+	disk_usage=" $(df -h /dev/sda2 | grep -Po '\d+%')"
+	ram_usage="  $(free | awk 'NR==2{printf "%.0f%\n", $3*100/$2 }')"
+
+	GET_BLUETOOTH
+	GET_VOLUME
+	GET_MIC
+
+	printf "%s" "$bluetooth | $mic | $volume | $ram_usage | $disk_usage | $cpu_temp | $date_and_time |"
+	sleep 1
+done

@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+choose="$(printf "%b" "  Limpar\n$(cliphist list)" | rofi -dmenu)"
+
+if [ "$choose" == " Limpar" ]; then
+	cliphist wipe
+else
+	cliphist decode "$choose" | wl-copy
+fi

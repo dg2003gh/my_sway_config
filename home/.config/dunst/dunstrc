@@ -1,0 +1,22 @@
+[global]
+origin = top-center
+padding = 10
+font = FiraCode Nerd Font 10
+dmenu = /usr/bin/rofi -dmenu -p dunst
+frame_color = "#008000"
+separator_color= "#008000"
+
+[urgency_low]
+background = "#000000"
+foreground = "#008000"
+
+[urgency_normal]
+background = "#000000"
+foreground = "#008000"
+
+
+[urgency_critical]
+background = "#000000"
+foreground = "#008000"
+frame_color = "#fe640b"
+

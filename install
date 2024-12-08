@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if cp -r ./home/. $HOME/; then
+	printf '%s\n' 'Installation completed! :)'
+else
+	printf '%s\n' "ERROR: coudn't complete the Installation!!:("
+fi
