@@ -24,5 +24,5 @@ To use this config copy everything to your /home or use install script.
 chmod +xr ./install && ./install
 ```
 
-![workspace screenshot](./screenshots/)
+![workspace screenshot](./screenshots/workspace.png)
 
